@@ -10,19 +10,28 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private float AccelrationForce =5;
     [SerializeField]
+    private float JumpForce = 15;
+    [SerializeField]
     private float MaxSpeed = 20;
     [SerializeField]
     private int MaxJumps = 1;
+    [SerializeField]
+    private ContactFilter2D GroundContactFilter;
+    [SerializeField]
+    private Collider2D GroundDetectTrigger;
+    [SerializeField]
+    private ContactFilter2D WallContactFilter;
+    [SerializeField]
+    private Collider2D WallDetectTrigger;
 
 
     private float HorizontalInput;
     private int RemainingJumps;
-    
+    private Collider2D[] GroundHitResults = new Collider2D[16];
+    private Collider2D[] WallHitResults = new Collider2D[16];
 
-
-
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
 
       
@@ -34,46 +43,66 @@ public class PlayerMoveScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        refilljumps();
+        HandleHorizontalInput();
+        HandleJumpInput();
+
+    }
+    private bool OnGround()
+    {
+       return GroundDetectTrigger.OverlapCollider(GroundContactFilter, GroundHitResults)>0;
+    }
+    private bool TouchingWall()
+    {
+        return WallDetectTrigger.OverlapCollider(WallContactFilter, WallHitResults) > 0;
+    }
+    private void refilljumps()
+    {
+        if (OnGround())
+        {
+            RemainingJumps = MaxJumps;
+        }
+        if (TouchingWall())
+        {
+            RemainingJumps = MaxJumps;
+        }
+    }
+
+    private void HandleHorizontalInput()
+    {
         HorizontalInput = Input.GetAxis("Horizontal");
+    }
 
-
-        /*
-        if (Input.GetKey(KeyCode.D))
-        {
-            Thisrigidbody.AddForce(new Vector2(3, 0));
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            Thisrigidbody.AddForce(new Vector2(-3, 0));
-        }
-        */
-
-        
-        
-        if (Input.GetKeyDown(KeyCode.W)&&RemainingJumps>0)
+    private void HandleJumpInput()
+    {
+        if (Input.GetButtonDown("Jump") && RemainingJumps > 0)
         {
             RemainingJumps--;
-            Thisrigidbody.velocity += new Vector2(0, 10);
+            Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
         }
-
-
-
- 
     }
 
     private void FixedUpdate()
     {
+        HorizontalMovement();
 
+        
 
+    }
+
+    private void HorizontalMovement()
+    {
         Thisrigidbody.AddForce(Vector2.right * HorizontalInput * AccelrationForce);
         Vector2 ClampedVelocity = Thisrigidbody.velocity;
         ClampedVelocity.x = Mathf.Clamp(Thisrigidbody.velocity.x, -MaxSpeed, MaxSpeed);
         Thisrigidbody.velocity = ClampedVelocity;
-
     }
+
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        RemainingJumps = MaxJumps;
+       // RemainingJumps = MaxJumps;
     }
 
 
