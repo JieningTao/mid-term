@@ -8,9 +8,16 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private Rigidbody2D Thisrigidbody;
     [SerializeField]
-    private float speed =5;
+    private float AccelrationForce =5;
+    [SerializeField]
+    private float MaxSpeed = 20;
+    [SerializeField]
+    private int MaxJumps = 1;
+
 
     private float HorizontalInput;
+    private int RemainingJumps;
+    
 
 
 
@@ -43,42 +50,30 @@ public class PlayerMoveScript : MonoBehaviour
 
         
         
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W)&&RemainingJumps>0)
         {
-            Thisrigidbody.velocity += new Vector2(0, 5);
+            RemainingJumps--;
+            Thisrigidbody.velocity += new Vector2(0, 10);
         }
 
 
 
-        //capvelocity();
+ 
     }
 
     private void FixedUpdate()
     {
 
 
-        Thisrigidbody.AddForce(Vector2.right * HorizontalInput * speed);
-
-
+        Thisrigidbody.AddForce(Vector2.right * HorizontalInput * AccelrationForce);
+        Vector2 ClampedVelocity = Thisrigidbody.velocity;
+        ClampedVelocity.x = Mathf.Clamp(Thisrigidbody.velocity.x, -MaxSpeed, MaxSpeed);
+        Thisrigidbody.velocity = ClampedVelocity;
 
     }
-
-
-    void capvelocity()
-    {
-        if (Thisrigidbody.velocity.x < -10)
-            Thisrigidbody.velocity = new Vector2(-10,Thisrigidbody.velocity.y);
-        if (Thisrigidbody.velocity.x > 10)
-            Thisrigidbody.velocity = new Vector2(10, Thisrigidbody.velocity.y);
-        if (Thisrigidbody.velocity.y < -10)
-            Thisrigidbody.velocity = new Vector2(Thisrigidbody.velocity.x, -10);
-        if (Thisrigidbody.velocity.y > 10)
-            Thisrigidbody.velocity = new Vector2(Thisrigidbody.velocity.x, 10);
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        RemainingJumps = MaxJumps;
     }
 
 
