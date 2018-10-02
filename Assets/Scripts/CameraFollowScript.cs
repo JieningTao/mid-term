@@ -4,19 +4,24 @@ using UnityEngine;
 
 public class CameraFollowScript : MonoBehaviour {
 
-    public GameObject Player;
-    public int viewdistance;
+    [SerializeField]
+    private GameObject Player;
+    [SerializeField]
+    private int viewdistance;
+
+
+    private Vector2 offest;
 
     // Use this for initialization
     void Start ()
     {
-
+        offest = transform.position - Player.transform.position;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        transform.position = new Vector3( Player.transform.position.x, Player.transform.position.y+2,viewdistance*-1);
+        transform.position = new Vector3( Player.transform.position.x+offest.x, Player.transform.position.y+offest.y,viewdistance*-1);
         
     }
 }

@@ -72,7 +72,10 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void HandleHorizontalInput()
     {
-        HorizontalInput = Input.GetAxis("Horizontal");
+        //if (OnGround() || TouchingWall())
+            HorizontalInput = Input.GetAxis("Horizontal");
+        //else
+            //HorizontalInput = 0;
     }
 
     private void HandleJumpInput()
