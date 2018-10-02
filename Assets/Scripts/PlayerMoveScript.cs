@@ -75,11 +75,19 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void HandleJumpInput()
     {
-        if (Input.GetButtonDown("Jump") && RemainingJumps > 0)
+        if (Input.GetButtonDown("Jump") && TouchingWall() && !OnGround())
+        {
+            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * -HorizontalInput*100, ForceMode2D.Impulse);
+
+
+        }
+        else if (Input.GetButtonDown("Jump") && RemainingJumps > 0)
         {
             RemainingJumps--;
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
+            //Thisrigidbody.AddForce(Vector2.right * HorizontalInput * JumpForce);
         }
+
     }
 
     private void FixedUpdate()
