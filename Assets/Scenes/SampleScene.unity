@@ -338,8 +338,9 @@ MonoBehaviour:
   Thisrigidbody: {fileID: 820152490}
   AccelrationForce: 50
   JumpForce: 15
+  WallJumpForce: 30
   MaxSpeed: 20
-  MaxJumps: 2
+  MaxExtraJumps: 1
   GroundContactFilter:
     useTriggers: 0
     useLayerMask: 1

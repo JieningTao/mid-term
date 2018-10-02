@@ -12,9 +12,11 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private float JumpForce = 15;
     [SerializeField]
+    private float WallJumpForce = 15;
+    [SerializeField]
     private float MaxSpeed = 20;
     [SerializeField]
-    private int MaxJumps = 1;
+    private int MaxExtraJumps = 1;
     [SerializeField]
     private ContactFilter2D GroundContactFilter;
     [SerializeField]
@@ -26,7 +28,7 @@ public class PlayerMoveScript : MonoBehaviour
 
 
     private float HorizontalInput;
-    private int RemainingJumps;
+    private int ExtraJumps;
     private Collider2D[] GroundHitResults = new Collider2D[16];
     private Collider2D[] WallHitResults = new Collider2D[16];
 
@@ -60,11 +62,11 @@ public class PlayerMoveScript : MonoBehaviour
     {
         if (OnGround())
         {
-            RemainingJumps = MaxJumps;
+            ExtraJumps = MaxExtraJumps;
         }
         if (TouchingWall())
         {
-            RemainingJumps = MaxJumps;
+            ExtraJumps = MaxExtraJumps;
         }
     }
 
@@ -77,15 +79,16 @@ public class PlayerMoveScript : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && TouchingWall() && !OnGround())
         {
-            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * -HorizontalInput*100, ForceMode2D.Impulse);
-
-
+            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * -HorizontalInput * WallJumpForce, ForceMode2D.Impulse);
         }
-        else if (Input.GetButtonDown("Jump") && RemainingJumps > 0)
+        else if (Input.GetButtonDown("Jump") && OnGround() && !TouchingWall())
         {
-            RemainingJumps--;
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
-            //Thisrigidbody.AddForce(Vector2.right * HorizontalInput * JumpForce);
+        }
+        else if (Input.GetButtonDown("Jump") && !OnGround() && !TouchingWall() && ExtraJumps > 0)
+        {
+            ExtraJumps--;
+            Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
         }
 
     }
@@ -110,7 +113,7 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       // RemainingJumps = MaxJumps;
+       // ExtraJumps = MaxExtraJumps;
     }
 
 
