@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMoveScript : MonoBehaviour
 {
@@ -25,12 +26,17 @@ public class PlayerMoveScript : MonoBehaviour
     private ContactFilter2D WallContactFilter;
     [SerializeField]
     private Collider2D WallDetectTrigger;
+    [SerializeField]
+    private PhysicsMaterial2D playermovingPM, playerstoppingPM;
+    [SerializeField]
+    private BoxCollider2D playergroundcollider;
 
 
     private float HorizontalInput;
     private int ExtraJumps;
     private Collider2D[] GroundHitResults = new Collider2D[16];
     private Collider2D[] WallHitResults = new Collider2D[16];
+    private Checkpoint currentCheckpoint;
 
     // Use this for initialization
     void Start ()
@@ -50,6 +56,14 @@ public class PlayerMoveScript : MonoBehaviour
         HandleJumpInput();
 
     }
+    private void FixedUpdate()
+    {
+
+        
+        HorizontalMovement();
+        Updatephysicsmaterial();
+    }
+
     private bool OnGround()
     {
        return GroundDetectTrigger.OverlapCollider(GroundContactFilter, GroundHitResults)>0;
@@ -73,7 +87,7 @@ public class PlayerMoveScript : MonoBehaviour
     private void HandleHorizontalInput()
     {
         //if (OnGround() || TouchingWall())
-            HorizontalInput = Input.GetAxis("Horizontal");
+            HorizontalInput = Input.GetAxisRaw("Horizontal");
         //else
             //HorizontalInput = 0;
     }
@@ -96,13 +110,7 @@ public class PlayerMoveScript : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
-    {
-        HorizontalMovement();
-
-        
-
-    }
+    
 
     private void HorizontalMovement()
     {
@@ -119,5 +127,30 @@ public class PlayerMoveScript : MonoBehaviour
        // ExtraJumps = MaxExtraJumps;
     }
 
+    private void Updatephysicsmaterial()
+    {
+        if (Mathf.Abs(HorizontalInput) > 0)
+            playergroundcollider.sharedMaterial = playermovingPM;
+        else
+            playergroundcollider.sharedMaterial = playerstoppingPM;
+        
+    }
+    public void setcurrentcheckpoint(Checkpoint newcurrentcheckpoint)
+    {
+        if (currentCheckpoint != null)
+            currentCheckpoint.setisactivated(false);
 
+        currentCheckpoint = newcurrentcheckpoint;
+        currentCheckpoint.setisactivated(true);
+    }
+    public void respawn()
+    {
+        Thisrigidbody.velocity = Vector2.zero;
+
+        if(currentCheckpoint == null)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        else
+            transform.position = currentCheckpoint.transform.position;
+    }
+    
 }
