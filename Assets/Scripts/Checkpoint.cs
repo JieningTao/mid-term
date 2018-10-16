@@ -13,6 +13,8 @@ public class Checkpoint : MonoBehaviour
     [SerializeField]
     private Color inactiveColor, activeColor;
 
+
+    private AudioSource audioSource;
     private bool isactivated = false;
     private SpriteRenderer spriteRenderer;
     private Vector3 shape;
@@ -21,6 +23,7 @@ public class Checkpoint : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         shape = transform.localScale;
+        audioSource = GetComponent<AudioSource>();
     }
     private void Update()
     {
@@ -60,11 +63,13 @@ public class Checkpoint : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-            if (collision.gameObject.CompareTag("Player"))
+            if (collision.gameObject.CompareTag("Player") && !isactivated)
             {
                 Debug.Log("Check Point Reached!");
                 PlayerMoveScript player = collision.GetComponent<PlayerMoveScript>();
                 player.setcurrentcheckpoint(this);
+            
+                audioSource.Play();
             }
         
     }
