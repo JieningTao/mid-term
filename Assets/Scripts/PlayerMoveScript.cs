@@ -31,7 +31,7 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private BoxCollider2D playergroundcollider;
 
-
+    private AudioSource audioSource;
     private float HorizontalInput;
     private int ExtraJumps;
     private Collider2D[] GroundHitResults = new Collider2D[16];
@@ -41,12 +41,12 @@ public class PlayerMoveScript : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-
-      
-
+        audioSource = GetComponent<AudioSource>();
 
 
-	}
+
+
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -97,15 +97,18 @@ public class PlayerMoveScript : MonoBehaviour
         if (Input.GetButtonDown("Jump") && TouchingWall() && !OnGround())
         {
             Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * -HorizontalInput * WallJumpForce, ForceMode2D.Impulse);
+            audioSource.Play();
         }
         else if (Input.GetButtonDown("Jump") && OnGround() && !TouchingWall())
         {
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
+            audioSource.Play();
         }
         else if (Input.GetButtonDown("Jump") && !OnGround() && !TouchingWall() && ExtraJumps > 0)
         {
             ExtraJumps--;
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
+            audioSource.Play();
         }
 
     }
