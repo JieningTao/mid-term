@@ -29,20 +29,22 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private PhysicsMaterial2D playermovingPM, playerstoppingPM;
     [SerializeField]
-    private BoxCollider2D playergroundcollider;
+    private Collider2D playergroundcollider;
 
+    private Animator anim;
     private AudioSource audioSource;
     private float HorizontalInput;
     private int ExtraJumps;
     private Collider2D[] GroundHitResults = new Collider2D[16];
     private Collider2D[] WallHitResults = new Collider2D[16];
     private Checkpoint currentCheckpoint;
+    bool facingRight = true;
 
     // Use this for initialization
     void Start ()
     {
         audioSource = GetComponent<AudioSource>();
-
+        anim = GetComponent<Animator>();
 
 
 
@@ -62,6 +64,8 @@ public class PlayerMoveScript : MonoBehaviour
         
         HorizontalMovement();
         Updatephysicsmaterial();
+        HandleAnimator();
+        
     }
 
     private bool OnGround()
@@ -89,7 +93,18 @@ public class PlayerMoveScript : MonoBehaviour
         //if (OnGround() || TouchingWall())
             HorizontalInput = Input.GetAxisRaw("Horizontal");
         //else
-            //HorizontalInput = 0;
+        //HorizontalInput = 0;
+        if (HorizontalInput > 0 && !facingRight)
+            Flip();
+        else if (HorizontalInput < 0 && facingRight)
+            Flip();
+    }
+
+    private void HandleAnimator()
+    {
+        anim.SetBool("OnGround", OnGround());
+        anim.SetFloat("V.Speed", Thisrigidbody.velocity.y);
+        anim.SetFloat("H.Speed", Mathf.Abs(Thisrigidbody.velocity.x));
     }
 
     private void HandleJumpInput()
@@ -110,7 +125,11 @@ public class PlayerMoveScript : MonoBehaviour
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
             audioSource.Play();
         }
-
+        else if (Input.GetButtonDown("Jump") && OnGround() && TouchingWall())
+        {
+            Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
+            audioSource.Play();
+        }
     }
 
     
@@ -155,5 +174,13 @@ public class PlayerMoveScript : MonoBehaviour
         else
             transform.position = currentCheckpoint.transform.position;
     }
-    
+    void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
+
+    }
+
 }
