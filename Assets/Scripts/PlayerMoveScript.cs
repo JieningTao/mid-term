@@ -26,8 +26,11 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private ContactFilter2D WallContactFilter;
     [SerializeField]
-    private Collider2D WallDetectTrigger;
+    private Collider2D LeftWallDetectTrigger;
     [SerializeField]
+    private Collider2D RightWallDetectTrigger;
+
+
     private PhysicsMaterial2D playermovingPM, playerstoppingPM;
     [SerializeField]
     private Collider2D playergroundcollider;
@@ -40,7 +43,8 @@ public class PlayerMoveScript : MonoBehaviour
     private float HorizontalInput;
     private int ExtraJumps;
     private Collider2D[] GroundHitResults = new Collider2D[16];
-    private Collider2D[] WallHitResults = new Collider2D[16];
+    private Collider2D[] LeftWallHitResults = new Collider2D[16];
+    private Collider2D[] RightWallHitResults = new Collider2D[16];
     private Checkpoint currentCheckpoint;
     bool facingRight = true;
 
@@ -82,9 +86,14 @@ public class PlayerMoveScript : MonoBehaviour
     {
        return GroundDetectTrigger.OverlapCollider(GroundContactFilter, GroundHitResults)>0;
     }
-    private bool TouchingWall()
+    private char TouchingWall()
     {
-        return WallDetectTrigger.OverlapCollider(WallContactFilter, WallHitResults) > 0;
+        if (RightWallDetectTrigger.OverlapCollider(WallContactFilter, RightWallHitResults) > 0)
+            return 'R';
+        if (LeftWallDetectTrigger.OverlapCollider(WallContactFilter, LeftWallHitResults) > 0)
+            return 'L';
+        
+        return 'N';
     }
     private void refilljumps()
     {
@@ -92,7 +101,7 @@ public class PlayerMoveScript : MonoBehaviour
         {
             ExtraJumps = MaxExtraJumps;
         }
-        if (TouchingWall())
+        if (TouchingWall()!='N')
         {
             ExtraJumps = MaxExtraJumps;
         }
@@ -124,24 +133,24 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void HandleJumpInput()
     {
-        if (Input.GetButtonDown("Jump") && TouchingWall() && !OnGround())
+        if (Input.GetButtonDown("Jump") && TouchingWall()=='L' && !OnGround())
         {
-            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * -HorizontalInput * WallJumpForce, ForceMode2D.Impulse);
+            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.left * WallJumpForce, ForceMode2D.Impulse);
             audioSource.Play();
         }
-        else if (Input.GetButtonDown("Jump") && OnGround() && !TouchingWall())
+        else if (Input.GetButtonDown("Jump") && TouchingWall() == 'R' && !OnGround())
+        {
+            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * WallJumpForce, ForceMode2D.Impulse);
+            audioSource.Play();
+        }
+        else if (Input.GetButtonDown("Jump") && OnGround())
         {
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
             audioSource.Play();
         }
-        else if (Input.GetButtonDown("Jump") && !OnGround() && !TouchingWall() && ExtraJumps > 0)
+        else if (Input.GetButtonDown("Jump") && !OnGround() && TouchingWall()=='N' && ExtraJumps > 0)
         {
             ExtraJumps--;
-            Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
-            audioSource.Play();
-        }
-        else if (Input.GetButtonDown("Jump") && OnGround() && TouchingWall())
-        {
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
             audioSource.Play();
         }
