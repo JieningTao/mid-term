@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMoveScript : MonoBehaviour
 {
@@ -30,8 +31,11 @@ public class PlayerMoveScript : MonoBehaviour
     private PhysicsMaterial2D playermovingPM, playerstoppingPM;
     [SerializeField]
     private Collider2D playergroundcollider;
+    [SerializeField]
+    private Text deadText;
 
     private Animator anim;
+    private bool IsDead;
     private AudioSource audioSource;
     private float HorizontalInput;
     private int ExtraJumps;
@@ -61,11 +65,17 @@ public class PlayerMoveScript : MonoBehaviour
     private void FixedUpdate()
     {
 
-        
-        HorizontalMovement();
-        Updatephysicsmaterial();
+        if (!IsDead)
+        {
+            HorizontalMovement();
+            Updatephysicsmaterial();
+        }
+        else if(Input.GetButtonDown("Activate"))
+        {
+            respawn();
+        }
         HandleAnimator();
-        
+
     }
 
     private bool OnGround()
@@ -101,10 +111,15 @@ public class PlayerMoveScript : MonoBehaviour
     }
 
     private void HandleAnimator()
-    {
-        anim.SetBool("OnGround", OnGround());
-        anim.SetFloat("V.Speed", Thisrigidbody.velocity.y);
-        anim.SetFloat("H.Speed", Mathf.Abs(Thisrigidbody.velocity.x));
+    {   
+        anim.SetBool("IsDead", IsDead);
+        if (!IsDead)
+        {
+            anim.SetBool("OnGround", OnGround());
+            anim.SetFloat("V.Speed", Thisrigidbody.velocity.y);
+            anim.SetFloat("H.Speed", Mathf.Abs(Thisrigidbody.velocity.x));
+        }
+        
     }
 
     private void HandleJumpInput()
@@ -167,12 +182,26 @@ public class PlayerMoveScript : MonoBehaviour
     }
     public void respawn()
     {
+        deadText.text = " ";
+        IsDead = false;
+
+
+
         Thisrigidbody.velocity = Vector2.zero;
 
         if(currentCheckpoint == null)
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         else
             transform.position = currentCheckpoint.transform.position;
+    }
+
+    public void killed()
+    {
+        deadText.text = "You Died! press E to respawn";
+        IsDead = true;
+
+        Thisrigidbody.constraints = RigidbodyConstraints2D.None;
+
     }
     void Flip()
     {
