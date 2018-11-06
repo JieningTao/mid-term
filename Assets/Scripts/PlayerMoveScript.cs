@@ -133,17 +133,8 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void HandleJumpInput()
     {
-        if (Input.GetButtonDown("Jump") && TouchingWall()=='L' && !OnGround())
-        {
-            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.left * WallJumpForce, ForceMode2D.Impulse);
-            audioSource.Play();
-        }
-        else if (Input.GetButtonDown("Jump") && TouchingWall() == 'R' && !OnGround())
-        {
-            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * WallJumpForce, ForceMode2D.Impulse);
-            audioSource.Play();
-        }
-        else if (Input.GetButtonDown("Jump") && OnGround())
+        
+        if (Input.GetButtonDown("Jump") && OnGround())
         {
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
             audioSource.Play();
@@ -152,6 +143,16 @@ public class PlayerMoveScript : MonoBehaviour
         {
             ExtraJumps--;
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
+            audioSource.Play();
+        }
+        else if (Input.GetButtonDown("Jump") && TouchingWall() == 'L' && !OnGround())
+        {
+            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.left * WallJumpForce, ForceMode2D.Impulse);
+            audioSource.Play();
+        }
+        else if (Input.GetButtonDown("Jump") && TouchingWall() == 'R' && !OnGround())
+        {
+            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * WallJumpForce, ForceMode2D.Impulse);
             audioSource.Play();
         }
     }
