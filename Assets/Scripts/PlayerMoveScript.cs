@@ -26,17 +26,19 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private ContactFilter2D WallContactFilter;
     [SerializeField]
-    private Collider2D LeftWallDetectTrigger;
+    private Collider2D FrontWallDetectTrigger;
     [SerializeField]
-    private Collider2D RightWallDetectTrigger;
-
-
+    private Collider2D BackWallDetectTrigger;
+    [SerializeField]
     private PhysicsMaterial2D playermovingPM, playerstoppingPM;
     [SerializeField]
     private Collider2D playergroundcollider;
     [SerializeField]
     private Text deadText;
+    [SerializeField]
+    private Text ScoreText;
 
+    private int Score;
     private Animator anim;
     private bool IsDead;
     private AudioSource audioSource;
@@ -53,7 +55,7 @@ public class PlayerMoveScript : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
-
+        Score = 0;
 
 
     }
@@ -82,19 +84,47 @@ public class PlayerMoveScript : MonoBehaviour
 
     }
 
+
+        void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.gameObject.CompareTag("PickUp"))
+            {
+                
+                other.gameObject.SetActive(false);
+            Score++;
+        }
+        ScoreText.text = "Score: " + Score;
+        }
+    
+
     private bool OnGround()
     {
        return GroundDetectTrigger.OverlapCollider(GroundContactFilter, GroundHitResults)>0;
     }
     private char TouchingWall()
     {
-        if (RightWallDetectTrigger.OverlapCollider(WallContactFilter, RightWallHitResults) > 0)
-            return 'R';
-        if (LeftWallDetectTrigger.OverlapCollider(WallContactFilter, LeftWallHitResults) > 0)
+
+        if (FrontWallDetectTrigger.OverlapCollider(WallContactFilter, LeftWallHitResults) > 0 )
+        {
+            if(!facingRight)
             return 'L';
-        
+            else
+            return 'R';
+        }
+
+        if (BackWallDetectTrigger.OverlapCollider(WallContactFilter, RightWallHitResults) > 0 )
+        {
+            if (!facingRight)
+                return 'R';
+            else
+                return 'L';
+        }
+            
+
         return 'N';
     }
+
+
     private void refilljumps()
     {
         if (OnGround())
@@ -145,14 +175,12 @@ public class PlayerMoveScript : MonoBehaviour
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
             audioSource.Play();
         }
-        else if (Input.GetButtonDown("Jump") && TouchingWall() == 'L' && !OnGround())
+        else if (Input.GetButtonDown("Jump") && TouchingWall() != 'N' && !OnGround())
         {
-            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.left * WallJumpForce, ForceMode2D.Impulse);
-            audioSource.Play();
-        }
-        else if (Input.GetButtonDown("Jump") && TouchingWall() == 'R' && !OnGround())
-        {
-            Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * WallJumpForce, ForceMode2D.Impulse);
+            if (TouchingWall() == 'L')
+                Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.right * WallJumpForce, ForceMode2D.Impulse);
+            else
+                Thisrigidbody.AddForce(Vector2.up * JumpForce + Vector2.left * WallJumpForce, ForceMode2D.Impulse);
             audioSource.Play();
         }
     }
@@ -165,13 +193,6 @@ public class PlayerMoveScript : MonoBehaviour
         Vector2 ClampedVelocity = Thisrigidbody.velocity;
         ClampedVelocity.x = Mathf.Clamp(Thisrigidbody.velocity.x, -MaxSpeed, MaxSpeed);
         Thisrigidbody.velocity = ClampedVelocity;
-    }
-
-
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-       // ExtraJumps = MaxExtraJumps;
     }
 
     private void Updatephysicsmaterial()
@@ -195,16 +216,22 @@ public class PlayerMoveScript : MonoBehaviour
         deadText.text = " ";
         IsDead = false;
 
-
+     
 
         Thisrigidbody.velocity = Vector2.zero;
 
-        if(currentCheckpoint == null)
+        if (currentCheckpoint == null)
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             transform.position = currentCheckpoint.transform.position;
-    }
+        }
 
+        //transform.eulerAngles = new Vector3(0, 0, 0);
+        //Thisrigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+    }
     public void killed()
     {
         deadText.text = "You Died! press E to respawn";
