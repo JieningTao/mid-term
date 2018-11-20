@@ -30,7 +30,7 @@ public class PlayerMoveScript : MonoBehaviour
     [SerializeField]
     private Collider2D BackWallDetectTrigger;
     [SerializeField]
-    private PhysicsMaterial2D playermovingPM, playerstoppingPM;
+    private PhysicsMaterial2D playermovingPM, playerstoppingPM, playerwallclingPM;
     [SerializeField]
     private Collider2D playergroundcollider;
     [SerializeField]
@@ -169,7 +169,7 @@ public class PlayerMoveScript : MonoBehaviour
             else if (Thisrigidbody.velocity.x < 0 && facingRight)
                 Flip();
 
-            if (TouchingWall() != 'N'&& !OnGround())
+            if (TouchingWall() != 'N'&& !OnGround() && Thisrigidbody.velocity.y>0.1)
             {
                 anim.SetBool("WallCling", true);
                 wallsmoke.enableEmission = true;
@@ -221,11 +221,14 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void Updatephysicsmaterial()
     {
-        if (Mathf.Abs(HorizontalInput) > 0)
+        if (!OnGround() && TouchingWall() != 'N')
+            playergroundcollider.sharedMaterial = playerwallclingPM;
+        else if (Mathf.Abs(HorizontalInput) > 0)
             playergroundcollider.sharedMaterial = playermovingPM;
         else
             playergroundcollider.sharedMaterial = playerstoppingPM;
-        
+
+
     }
     public void setcurrentcheckpoint(Checkpoint newcurrentcheckpoint)
     {
