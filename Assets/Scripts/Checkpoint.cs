@@ -5,12 +5,6 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     [SerializeField]
-    private float inactiverotationspeed = 100,activerotationspeed = 300;
-
-    [SerializeField]
-    private float inactiveScale = 0.75f, activeScale = 1.3f;
-
-    [SerializeField]
     private Color inactiveColor, activeColor;
 
 
@@ -25,20 +19,6 @@ public class Checkpoint : MonoBehaviour
         shape = transform.localScale;
         audioSource = GetComponent<AudioSource>();
     }
-    private void Update()
-    {
-        UpdateRotation();
-    }
-
-    private void UpdateScale()
-    {
-        float scale = inactiveScale;
-        if (isactivated)
-           scale = activeScale;
-
-        transform.localScale = shape * scale;
-        
-    }
     private void UpdateColor()
     {
         Color color = inactiveColor;
@@ -47,18 +27,6 @@ public class Checkpoint : MonoBehaviour
 
         spriteRenderer.color = color;
     }
-
-    private void UpdateRotation()
-    {
-        float rotationspeed = inactiverotationspeed;
-        if (isactivated)
-            rotationspeed = activerotationspeed;
-            
-
-
-        transform.Rotate(Vector3.up*rotationspeed*Time.deltaTime);
-    }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -77,7 +45,6 @@ public class Checkpoint : MonoBehaviour
     public void setisactivated(bool value)
     {
         isactivated = value;
-        UpdateScale();
         UpdateColor();
     }
 }

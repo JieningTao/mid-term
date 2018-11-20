@@ -37,6 +37,10 @@ public class PlayerMoveScript : MonoBehaviour
     private Text deadText;
     [SerializeField]
     private Text ScoreText;
+    [SerializeField]
+    private float airspeedreduction;
+    [SerializeField]
+    private ParticleSystem wallsmoke;
 
     private int Score;
     private Animator anim;
@@ -143,10 +147,12 @@ public class PlayerMoveScript : MonoBehaviour
             HorizontalInput = Input.GetAxisRaw("Horizontal");
         //else
         //HorizontalInput = 0;
+        /*
         if (HorizontalInput > 0 && !facingRight)
             Flip();
         else if (HorizontalInput < 0 && facingRight)
             Flip();
+            */
     }
 
     private void HandleAnimator()
@@ -157,6 +163,23 @@ public class PlayerMoveScript : MonoBehaviour
             anim.SetBool("OnGround", OnGround());
             anim.SetFloat("V.Speed", Thisrigidbody.velocity.y);
             anim.SetFloat("H.Speed", Mathf.Abs(Thisrigidbody.velocity.x));
+
+            if(Thisrigidbody.velocity.x>0 && !facingRight)
+                Flip();
+            else if (Thisrigidbody.velocity.x < 0 && facingRight)
+                Flip();
+
+            if (TouchingWall() != 'N'&& !OnGround())
+            {
+                anim.SetBool("WallCling", true);
+                wallsmoke.enableEmission = true;
+            }
+            else if(TouchingWall() == 'N' || OnGround())
+            {
+                anim.SetBool("WallCling", false);
+                wallsmoke.enableEmission = false;
+            }
+
         }
         
     }
@@ -189,7 +212,8 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void HorizontalMovement()
     {
-        Thisrigidbody.AddForce(Vector2.right * HorizontalInput * AccelrationForce);
+        float accelerationToUse = OnGround() ? AccelrationForce : AccelrationForce * airspeedreduction;
+        Thisrigidbody.AddForce(Vector2.right * HorizontalInput * accelerationToUse);
         Vector2 ClampedVelocity = Thisrigidbody.velocity;
         ClampedVelocity.x = Mathf.Clamp(Thisrigidbody.velocity.x, -MaxSpeed, MaxSpeed);
         Thisrigidbody.velocity = ClampedVelocity;
@@ -223,10 +247,7 @@ public class PlayerMoveScript : MonoBehaviour
         if (currentCheckpoint == null)
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         else
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             transform.position = currentCheckpoint.transform.position;
-        }
 
         //transform.eulerAngles = new Vector3(0, 0, 0);
         //Thisrigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;

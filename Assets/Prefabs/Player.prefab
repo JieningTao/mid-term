@@ -254,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Thisrigidbody: {fileID: 50387490300791474}
   AccelrationForce: 20
-  JumpForce: 10
+  JumpForce: 12
   WallJumpForce: 10
   MaxSpeed: 15
   MaxExtraJumps: 1
@@ -294,6 +294,7 @@ MonoBehaviour:
   playergroundcollider: {fileID: 70766844198398226}
   deadText: {fileID: 0}
   ScoreText: {fileID: 0}
+  airspeedreduction: 0.4
 --- !u!212 &212585731859622770
 SpriteRenderer:
   m_ObjectHideFlags: 1
