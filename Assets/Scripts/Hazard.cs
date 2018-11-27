@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Hazard : MonoBehaviour
 {
-
     private AudioSource audioSource;
 
     private void Start()
