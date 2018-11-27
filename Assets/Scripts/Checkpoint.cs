@@ -6,13 +6,11 @@ public class Checkpoint : MonoBehaviour
 {
     [SerializeField]
     private Color inactiveColor, activeColor;
-
-
     private AudioSource audioSource;
     private bool isactivated = false;
     private SpriteRenderer spriteRenderer;
     private Vector3 shape;
-
+    
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
