@@ -52,6 +52,7 @@ public class PlayerMoveScript : MonoBehaviour
     private Collider2D[] LeftWallHitResults = new Collider2D[16];
     private Collider2D[] RightWallHitResults = new Collider2D[16];
     private Checkpoint currentCheckpoint;
+    private pickupGem Gem;
     bool facingRight = true;
 
     // Use this for initialization
@@ -91,13 +92,7 @@ public class PlayerMoveScript : MonoBehaviour
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.CompareTag("PickUp"))
-            {
-                
-                other.gameObject.SetActive(false);
-            Score++;
-        }
-        ScoreText.text = "Score: " + Score;
+        
         }
     
 
@@ -238,6 +233,14 @@ public class PlayerMoveScript : MonoBehaviour
         currentCheckpoint = newcurrentcheckpoint;
         currentCheckpoint.setisactivated(true);
     }
+
+    public void pickupgem(pickupGem NewGem)
+    {
+
+        Score++;
+        ScoreText.text = "Score: " + Score;
+        
+    }
     public void respawn()
     {
         deadText.text = " ";
@@ -252,8 +255,8 @@ public class PlayerMoveScript : MonoBehaviour
         else
             transform.position = currentCheckpoint.transform.position;
 
-        //transform.eulerAngles = new Vector3(0, 0, 0);
-        //Thisrigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        transform.eulerAngles = Vector3.zero;
+        Thisrigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
     }
     public void killed()

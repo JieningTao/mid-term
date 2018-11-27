@@ -11,12 +11,10 @@ public class Checkpoint : MonoBehaviour
     private AudioSource audioSource;
     private bool isactivated = false;
     private SpriteRenderer spriteRenderer;
-    private Vector3 shape;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        shape = transform.localScale;
         audioSource = GetComponent<AudioSource>();
     }
     private void UpdateColor()
