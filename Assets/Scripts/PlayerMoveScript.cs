@@ -223,7 +223,6 @@ public class PlayerMoveScript : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         else
             transform.position = currentCheckpoint.transform.position;
-
     }
     
     public void Killed()
