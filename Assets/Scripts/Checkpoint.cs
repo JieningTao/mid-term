@@ -14,21 +14,19 @@ public class Checkpoint : MonoBehaviour
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        shape = transform.localScale;
         audioSource = GetComponent<AudioSource>();
+        
+        shape = transform.localScale;
     }
     private void UpdateColor()
     {
         Color color = inactiveColor;
         if (isactivated)
             color = activeColor;
-
         spriteRenderer.color = color;
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
             if (collision.gameObject.CompareTag("Player") && !isactivated)
             {
                 Debug.Log("Check Point Reached!");
@@ -39,8 +37,7 @@ public class Checkpoint : MonoBehaviour
             }
         
     }
-
-    public void setisactivated(bool value)
+    public void Setisactivated(bool value)
     {
         isactivated = value;
         UpdateColor();
