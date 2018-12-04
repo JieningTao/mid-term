@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class Hazard : MonoBehaviour
 {
-
     private AudioSource audioSource;
 
     private void Start()
@@ -14,9 +13,6 @@ public class Hazard : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
-        
-
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("player killed!");
@@ -28,6 +24,4 @@ public class Hazard : MonoBehaviour
         else
             Debug.Log("something else entered hazard");
     }
-
-
 }
