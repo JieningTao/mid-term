@@ -64,12 +64,11 @@ public class PlayerMoveScript : MonoBehaviour
         Score = 0;
     }
 	
-	void Update ()
+    void Update ()
     {
         refilljumps();
         HandleHorizontalInput();
         HandleJumpInput();
-
     }
     
     private void FixedUpdate()
@@ -86,15 +85,15 @@ public class PlayerMoveScript : MonoBehaviour
         HandleAnimator();
     }
 
-        void OnTriggerEnter2D(Collider2D other)
-        {
+    void OnTriggerEnter2D(Collider2D other)
+    {
             if (other.gameObject.CompareTag("PickUp"))
             {
                 other.gameObject.SetActive(false);
                 Score++;
             }
         ScoreText.text = "Score: " + Score;
-        }
+    }
 
     private bool OnGround()
     {
@@ -120,7 +119,7 @@ public class PlayerMoveScript : MonoBehaviour
         return 'N';
     }
 
-    private void refilljumps()
+    private void RefillJumps()
     {
         if (OnGround())
         {
@@ -202,11 +201,9 @@ public class PlayerMoveScript : MonoBehaviour
             playergroundcollider.sharedMaterial = playermovingPM;
         else
             playergroundcollider.sharedMaterial = playerstoppingPM;
-
-
     }
     
-    public void setcurrentcheckpoint(Checkpoint newcurrentcheckpoint)
+    public void SetCurrentCheckpoint(Checkpoint newcurrentcheckpoint)
     {
         if (currentCheckpoint != null)
             currentCheckpoint.setisactivated(false);
@@ -215,12 +212,10 @@ public class PlayerMoveScript : MonoBehaviour
         currentCheckpoint.setisactivated(true);
     }
     
-    public void respawn()
+    public void Respawn()
     {
         deadText.text = " ";
         IsDead = false;
-
-     
 
         Thisrigidbody.velocity = Vector2.zero;
 
@@ -229,12 +224,9 @@ public class PlayerMoveScript : MonoBehaviour
         else
             transform.position = currentCheckpoint.transform.position;
 
-        //transform.eulerAngles = new Vector3(0, 0, 0);
-        //Thisrigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-
     }
     
-    public void killed()
+    public void Killed()
     {
         deadText.text = "You Died! press E to respawn";
         IsDead = true;
