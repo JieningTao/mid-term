@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class pickupGem : MonoBehaviour
+public class PickupGem : MonoBehaviour
 {
 
     [SerializeField]
@@ -12,8 +12,4 @@ public class pickupGem : MonoBehaviour
     {
         playercollider = GetComponent<PolygonCollider2D>();
     }
-    
-	void Update ()
-       {
-       }
 }
