@@ -10,7 +10,6 @@ public class Checkpoint : MonoBehaviour
     private AudioSource audioSource;
     private bool isactivated = false;
     private SpriteRenderer spriteRenderer;
-    private Vector3 shape;
     
     private void Start()
     {
