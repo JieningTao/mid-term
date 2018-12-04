@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PickupGem : MonoBehaviour
 {
-
     [SerializeField]
     private Collider2D playercollider;
 
