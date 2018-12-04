@@ -7,9 +7,10 @@ using UnityEngine.UI;
 
 public class PlayerMoveScript : MonoBehaviour
 {
+#region Plugin Variables
     [SerializeField]
     private Rigidbody2D Thisrigidbody;
-    [SerializeField]
+    [Tooltip("The speed that players start to move")]
     private float AccelrationForce =5;
     [SerializeField]
     private float JumpForce = 15;
@@ -17,7 +18,7 @@ public class PlayerMoveScript : MonoBehaviour
     private float WallJumpForce = 15;
     [SerializeField]
     private float MaxSpeed = 20;
-    [SerializeField]
+    [Tooltip("Amount of in-air jumps avaliable to player")]
     private int MaxExtraJumps = 1;
     [SerializeField]
     private ContactFilter2D GroundContactFilter;
@@ -37,10 +38,11 @@ public class PlayerMoveScript : MonoBehaviour
     private Text deadText;
     [SerializeField]
     private Text ScoreText;
-    [SerializeField]
+    [Tooltip("How much the player slows down in the air")]
     private float airspeedreduction;
     [SerializeField]
     private ParticleSystem wallsmoke;
+#endregion
 
     private int Score;
     private Animator anim;
@@ -60,11 +62,8 @@ public class PlayerMoveScript : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         Score = 0;
-
-
     }
 	
-	// Update is called once per frame
 	void Update ()
     {
         refilljumps();
@@ -72,9 +71,9 @@ public class PlayerMoveScript : MonoBehaviour
         HandleJumpInput();
 
     }
+    
     private void FixedUpdate()
     {
-
         if (!IsDead)
         {
             HorizontalMovement();
@@ -85,29 +84,25 @@ public class PlayerMoveScript : MonoBehaviour
             respawn();
         }
         HandleAnimator();
-
     }
-
 
         void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("PickUp"))
             {
-                
                 other.gameObject.SetActive(false);
-            Score++;
-        }
+                Score++;
+            }
         ScoreText.text = "Score: " + Score;
         }
-    
 
     private bool OnGround()
     {
        return GroundDetectTrigger.OverlapCollider(GroundContactFilter, GroundHitResults)>0;
     }
+    
     private char TouchingWall()
     {
-
         if (FrontWallDetectTrigger.OverlapCollider(WallContactFilter, LeftWallHitResults) > 0 )
         {
             if(!facingRight)
@@ -115,7 +110,6 @@ public class PlayerMoveScript : MonoBehaviour
             else
             return 'R';
         }
-
         if (BackWallDetectTrigger.OverlapCollider(WallContactFilter, RightWallHitResults) > 0 )
         {
             if (!facingRight)
@@ -123,11 +117,8 @@ public class PlayerMoveScript : MonoBehaviour
             else
                 return 'L';
         }
-            
-
         return 'N';
     }
-
 
     private void refilljumps()
     {
@@ -143,16 +134,7 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void HandleHorizontalInput()
     {
-        //if (OnGround() || TouchingWall())
             HorizontalInput = Input.GetAxisRaw("Horizontal");
-        //else
-        //HorizontalInput = 0;
-        /*
-        if (HorizontalInput > 0 && !facingRight)
-            Flip();
-        else if (HorizontalInput < 0 && facingRight)
-            Flip();
-            */
     }
 
     private void HandleAnimator()
@@ -163,12 +145,10 @@ public class PlayerMoveScript : MonoBehaviour
             anim.SetBool("OnGround", OnGround());
             anim.SetFloat("V.Speed", Thisrigidbody.velocity.y);
             anim.SetFloat("H.Speed", Mathf.Abs(Thisrigidbody.velocity.x));
-
             if(Thisrigidbody.velocity.x>0 && !facingRight)
                 Flip();
             else if (Thisrigidbody.velocity.x < 0 && facingRight)
                 Flip();
-
             if (TouchingWall() != 'N'&& !OnGround() && Thisrigidbody.velocity.y>0.1)
             {
                 anim.SetBool("WallCling", true);
@@ -179,14 +159,11 @@ public class PlayerMoveScript : MonoBehaviour
                 anim.SetBool("WallCling", false);
                 wallsmoke.enableEmission = false;
             }
-
         }
-        
     }
 
     private void HandleJumpInput()
     {
-        
         if (Input.GetButtonDown("Jump") && OnGround())
         {
             Thisrigidbody.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
@@ -208,8 +185,6 @@ public class PlayerMoveScript : MonoBehaviour
         }
     }
 
-    
-
     private void HorizontalMovement()
     {
         float accelerationToUse = OnGround() ? AccelrationForce : AccelrationForce * airspeedreduction;
@@ -230,6 +205,7 @@ public class PlayerMoveScript : MonoBehaviour
 
 
     }
+    
     public void setcurrentcheckpoint(Checkpoint newcurrentcheckpoint)
     {
         if (currentCheckpoint != null)
@@ -238,6 +214,7 @@ public class PlayerMoveScript : MonoBehaviour
         currentCheckpoint = newcurrentcheckpoint;
         currentCheckpoint.setisactivated(true);
     }
+    
     public void respawn()
     {
         deadText.text = " ";
@@ -256,6 +233,7 @@ public class PlayerMoveScript : MonoBehaviour
         //Thisrigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
     }
+    
     public void killed()
     {
         deadText.text = "You Died! press E to respawn";
@@ -264,13 +242,12 @@ public class PlayerMoveScript : MonoBehaviour
         Thisrigidbody.constraints = RigidbodyConstraints2D.None;
 
     }
+    
     void Flip()
     {
         facingRight = !facingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
-
     }
-
 }
