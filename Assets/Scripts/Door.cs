@@ -7,6 +7,7 @@ public class Door : MonoBehaviour
 {
     [SerializeField]
     private string sceneToLoad;
+    
     private bool isPlayerInTrigger;
 
     private void OnTriggerEnter2D(Collider2D collision)
