@@ -10,6 +10,7 @@ public class PlayerMoveScript : MonoBehaviour
 #region Plugin Variables
     [SerializeField]
     private Rigidbody2D Thisrigidbody;
+    [SerializeField]
     [Tooltip("The speed that players start to move")]
     private float AccelrationForce =5;
     [SerializeField]
@@ -18,6 +19,7 @@ public class PlayerMoveScript : MonoBehaviour
     private float WallJumpForce = 15;
     [SerializeField]
     private float MaxSpeed = 20;
+    [SerializeField]
     [Tooltip("Amount of in-air jumps avaliable to player")]
     private int MaxExtraJumps = 1;
     [SerializeField]
@@ -38,6 +40,7 @@ public class PlayerMoveScript : MonoBehaviour
     private Text deadText;
     [SerializeField]
     private Text ScoreText;
+    [SerializeField]
     [Tooltip("How much the player slows down in the air")]
     private float airspeedreduction;
     [SerializeField]
@@ -54,7 +57,7 @@ public class PlayerMoveScript : MonoBehaviour
     private Collider2D[] LeftWallHitResults = new Collider2D[16];
     private Collider2D[] RightWallHitResults = new Collider2D[16];
     private Checkpoint currentCheckpoint;
-    private pickupGem Gem;
+    private PickupGem Gem;
     bool facingRight = true;
 
     // Use this for initialization
@@ -67,7 +70,7 @@ public class PlayerMoveScript : MonoBehaviour
 	
     void Update ()
     {
-        refilljumps();
+        RefillJumps();
         HandleHorizontalInput();
         HandleJumpInput();
     }
@@ -81,7 +84,7 @@ public class PlayerMoveScript : MonoBehaviour
         }
         else if(Input.GetButtonDown("Activate"))
         {
-            respawn();
+            Respawn();
         }
         HandleAnimator();
     }
@@ -197,15 +200,14 @@ public class PlayerMoveScript : MonoBehaviour
     public void SetCurrentCheckpoint(Checkpoint newcurrentcheckpoint)
     {
         if (currentCheckpoint != null)
-            currentCheckpoint.setisactivated(false);
+            currentCheckpoint.Setisactivated(false);
 
         currentCheckpoint = newcurrentcheckpoint;
-        currentCheckpoint.setisactivated(true);
+        currentCheckpoint.Setisactivated(true);
     }
 
-    public void pickupgem(pickupGem NewGem)
+    public void pickupgem(PickupGem NewGem)
     {
-
         Score++;
         ScoreText.text = "Score: " + Score;      
     }
@@ -222,14 +224,13 @@ public class PlayerMoveScript : MonoBehaviour
         else
             transform.position = currentCheckpoint.transform.position;
 
-
         transform.eulerAngles = Vector3.zero;
         Thisrigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
     
     public void Killed()
     {
-        deadText.text = "You Died! press E to respawn";
+        deadText.text = "You Died!\n press E to respawn";
         IsDead = true;
 
         Thisrigidbody.constraints = RigidbodyConstraints2D.None;

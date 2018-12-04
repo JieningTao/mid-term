@@ -15,8 +15,6 @@ public class Checkpoint : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
-        
-        shape = transform.localScale;
     }
     
     private void UpdateColor()
@@ -33,7 +31,7 @@ public class Checkpoint : MonoBehaviour
             {
                 Debug.Log("Check Point Reached!");
                 PlayerMoveScript player = collision.GetComponent<PlayerMoveScript>();
-                player.setcurrentcheckpoint(this);
+                player.SetCurrentCheckpoint(this);
                 audioSource.Play();
             }
     }

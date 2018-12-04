@@ -18,7 +18,7 @@ public class Hazard : MonoBehaviour
             Debug.Log("player killed!");
             // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             PlayerMoveScript player = collision.GetComponent<PlayerMoveScript>();
-            player.killed();
+            player.Killed();
             audioSource.Play();
         }
         else

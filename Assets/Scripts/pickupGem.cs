@@ -9,14 +9,12 @@ public class PickupGem : MonoBehaviour
     
     private AudioSource audioSource;
     private SpriteRenderer image;
-    private Rigidbody2D thisrigidbody;
     private GemManager managerscript;
 
     void Start ()
     {
         audioSource = GetComponent<AudioSource>();
         image = GetComponent<SpriteRenderer>();
-        thisrigidbody = GetComponent<Rigidbody2D>();
         managerscript = Gemmanager.GetComponent<GemManager>();
   	}
 
