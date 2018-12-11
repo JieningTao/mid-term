@@ -153,6 +153,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: OnGround
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsDead
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102197921392357490}
   m_Solo: 0
@@ -498,7 +501,7 @@ AnimatorStateMachine:
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 0, y: -12, z: 0}
+  m_AnyStatePosition: {x: -120, y: -24, z: 0}
   m_EntryPosition: {x: 48, y: 180, z: 0}
   m_ExitPosition: {x: 588, y: 96, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
