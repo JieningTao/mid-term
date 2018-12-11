@@ -70,9 +70,12 @@ public class PlayerMoveScript : MonoBehaviour
 	
     void Update ()
     {
-        RefillJumps();
-        HandleHorizontalInput();
-        HandleJumpInput();
+        if (!IsDead)
+        {
+            RefillJumps();
+            HandleHorizontalInput();
+            HandleJumpInput();
+        }
     }
     
     private void FixedUpdate()
